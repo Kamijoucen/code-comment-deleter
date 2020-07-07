@@ -1,6 +1,8 @@
 package com.kamijoucen.code_deleter.parse;
 
 import java.io.CharArrayReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Lexical {
 
@@ -18,17 +20,19 @@ public class Lexical {
 
     private int offset;
 
+    private List<TextRange> commentRanges;
+
 
     public Lexical(String content) {
         this.content = content;
         this.offset = 0;
         this.state = State.NORMAL;
+        this.commentRanges = new ArrayList<>();
     }
 
     //
 
     public String parse() {
-        StringBuilder newContent = new StringBuilder();
 
         while (offset < content.length()) {
             switch (content.charAt(offset)) {
@@ -49,15 +53,15 @@ public class Lexical {
 
                 switch (state) {
                     case NORMAL:
-                        skipNormal(newContent);
+                        skipNormal();
                         match = false;
                         break;
                     case STRING:
-                        skipString(newContent);
+                        skipString();
                         match = false;
                         break;
                     case COMMENT:
-                        skipComment(newContent);
+                        skipComment();
                         match = false;
                         break;
                     case IN_COMMENT:
@@ -71,7 +75,7 @@ public class Lexical {
 
             } while (match);
         }
-        return newContent.toString();
+        return null;
     }
 
     private int forward() {
@@ -79,14 +83,23 @@ public class Lexical {
     }
 
 
-    private void skipNormal(StringBuilder builder) {
-    }
-
-    private void skipString(StringBuilder builder) {
+    private void skipNormal() {
 
     }
 
-    private void skipComment(StringBuilder builder) {
+    private void skipString() {
+        forward(); // eat first "
+        while (offset < content.length()
+                && content.charAt(offset) != '\"') {
+            forward();
+            if (content.charAt(offset) == '\\') {
+                forward();
+            }
+        }
+        forward(); // eat last "
+    }
+
+    private void skipComment() {
     }
 
 }
