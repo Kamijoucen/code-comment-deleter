@@ -79,8 +79,10 @@ public class MachineLexical implements Lexical {
 
     private void scanNormal() {
         while (offset < content.length()
-                && content.charAt(offset) != '/'
-                && content.charAt(offset) != '"') {
+                && !content.startsWith("//", offset)
+                && !content.startsWith("/*", offset)
+                && content.charAt(offset) != '"'
+                && content.charAt(offset) != '\'') {
             appendAndForward();
         }
     }
