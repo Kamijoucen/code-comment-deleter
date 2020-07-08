@@ -1,13 +1,11 @@
 package com.kamijoucen.code_deleter.parse;
 
-import java.io.CharArrayReader;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Lexical {
 
     public enum State {
-
         NORMAL,
         STRING,
         IN_COMMENT,
@@ -20,6 +18,8 @@ public class Lexical {
 
     private int offset;
 
+    private StringBuilder newContext = new StringBuilder();
+
     private List<TextRange> commentRanges;
 
 
@@ -27,7 +27,6 @@ public class Lexical {
         this.content = content;
         this.offset = 0;
         this.state = State.NORMAL;
-        this.commentRanges = new ArrayList<>();
     }
 
     //
@@ -35,6 +34,7 @@ public class Lexical {
     public String parse() {
 
         while (offset < content.length()) {
+
             switch (content.charAt(offset)) {
                 case '\"':
                     this.state = State.STRING;
@@ -78,28 +78,52 @@ public class Lexical {
         return null;
     }
 
-    private int forward() {
-        return ++offset;
-    }
-
 
     private void skipNormal() {
 
     }
 
     private void skipString() {
-        forward(); // eat first "
+        appendAndForward();
         while (offset < content.length()
                 && content.charAt(offset) != '\"') {
-            forward();
             if (content.charAt(offset) == '\\') {
-                forward();
+                appendAndForward();
+                appendAndForward();
+            } else {
+                appendAndForward();
             }
         }
-        forward(); // eat last "
+        appendAndForward(); // eat last "
     }
 
     private void skipComment() {
+        forward();
+        if (content.charAt(offset) == '\\') {
+            while (offset < content.length() && content.charAt(offset) != '\n') {
+                forward();
+            }
+            append('\n');
+        } else {
+
+        }
+    }
+
+    private void forward() {
+        ++offset;
+    }
+
+    private void append(char ch) {
+        newContext.append(ch);
+    }
+
+    private void appendContent() {
+        append(content.charAt(offset));
+    }
+
+    private void appendAndForward() {
+        appendContent();
+        forward();
     }
 
 }
