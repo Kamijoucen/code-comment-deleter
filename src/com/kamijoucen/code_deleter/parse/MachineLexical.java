@@ -1,5 +1,7 @@
 package com.kamijoucen.code_deleter.parse;
 
+import com.kamijoucen.code_deleter.util.Constants;
+
 public class MachineLexical implements Lexical {
 
     public enum State {
@@ -116,6 +118,7 @@ public class MachineLexical implements Lexical {
             }
             forward(); // eat "
             forward(); // eat /
+            append(Constants.SPACE);
         }
     }
 
@@ -125,6 +128,10 @@ public class MachineLexical implements Lexical {
 
     private void append(char ch) {
         newContext.append(ch);
+    }
+
+    private void append(String str) {
+        newContext.append(str);
     }
 
     private void appendContent() {
