@@ -1,8 +1,5 @@
 package com.kamijoucen.code_deleter.parse;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Lexical {
 
     public enum State {
@@ -20,16 +17,12 @@ public class Lexical {
 
     private StringBuilder newContext = new StringBuilder();
 
-    private List<TextRange> commentRanges;
-
-
     public Lexical(String content) {
         this.content = content;
         this.offset = 0;
         this.state = State.NORMAL;
     }
 
-    //
 
     public String parse() {
 
@@ -53,11 +46,11 @@ public class Lexical {
 
                 switch (state) {
                     case NORMAL:
-                        skipNormal();
+                        scanNormal();
                         match = false;
                         break;
                     case STRING:
-                        skipString();
+                        scanString();
                         match = false;
                         break;
                     case COMMENT:
@@ -75,15 +68,18 @@ public class Lexical {
 
             } while (match);
         }
-        return null;
+        return newContext.toString();
     }
 
-
-    private void skipNormal() {
-
+    private void scanNormal() {
+        while (offset < content.length()
+                && content.charAt(offset) != '/'
+                && content.charAt(offset) != '"') {
+            appendAndForward();
+        }
     }
 
-    private void skipString() {
+    private void scanString() {
         appendAndForward();
         while (offset < content.length()
                 && content.charAt(offset) != '\"') {
@@ -99,13 +95,19 @@ public class Lexical {
 
     private void skipComment() {
         forward();
-        if (content.charAt(offset) == '\\') {
-            while (offset < content.length() && content.charAt(offset) != '\n') {
+        if (content.charAt(offset) == '/') {
+            while (offset < content.length()
+                    && content.charAt(offset) != '\n') {
                 forward();
             }
-            append('\n');
-        } else {
-
+        } else if (content.charAt(offset) == '*') {
+            forward();
+            while (content.charAt(offset) != '*'
+                    || content.charAt(offset + 1) != '/') {
+                forward();
+            }
+            forward(); // eat "
+            forward(); // eat /
         }
     }
 
