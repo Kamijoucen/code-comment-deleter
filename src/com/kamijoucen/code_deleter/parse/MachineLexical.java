@@ -15,6 +15,8 @@ public class MachineLexical implements Lexical {
 
     private int offset;
 
+    private char strFlag;
+
     private StringBuilder newContext = new StringBuilder();
 
     public MachineLexical(String content) {
@@ -29,6 +31,7 @@ public class MachineLexical implements Lexical {
         while (offset < content.length()) {
 
             switch (content.charAt(offset)) {
+                case '\'':
                 case '\"':
                     this.state = State.STRING;
                     break;
@@ -50,6 +53,7 @@ public class MachineLexical implements Lexical {
                         match = false;
                         break;
                     case STRING:
+                        strFlag = content.charAt(offset);
                         scanString();
                         match = false;
                         break;
@@ -61,6 +65,8 @@ public class MachineLexical implements Lexical {
                         if (content.startsWith("//", offset)
                                 || content.startsWith("/*", offset)) {
                             this.state = State.COMMENT;
+                        } else {
+                            this.state = State.NORMAL;
                         }
                         match = true;
                         break;
@@ -82,7 +88,7 @@ public class MachineLexical implements Lexical {
     private void scanString() {
         appendAndForward();
         while (offset < content.length()
-                && content.charAt(offset) != '\"') {
+                && content.charAt(offset) != strFlag) {
             if (content.charAt(offset) == '\\') {
                 appendAndForward();
                 appendAndForward();
@@ -90,7 +96,7 @@ public class MachineLexical implements Lexical {
                 appendAndForward();
             }
         }
-        appendAndForward(); // eat last "
+        appendAndForward();
     }
 
     private void skipComment() {
