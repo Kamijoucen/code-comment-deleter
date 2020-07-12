@@ -20,7 +20,8 @@ public class DeleteTask implements Runnable {
     public void run() {
         String contnet = FileUtil.read(sourcePath);
         if (contnet != null) {
-            FileUtil.cover(sourcePath, new MachineLexical(contnet).parse());
+            String content = new MachineLexical(contnet).parse();
+            FileUtil.cover(sourcePath, content);
         }
         latch.countDown();
     }

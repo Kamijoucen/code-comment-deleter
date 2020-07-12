@@ -39,8 +39,18 @@ public class FileUtil {
 
     public static void cover(String filePath, String newContent) {
 //        System.out.println("\n--------------------------------------------------------------\n");
-        System.out.println(filePath + " DONE!");
-//        System.out.println(newContent);
+        PrintStream printStream = null;
+        try {
+            printStream = new PrintStream(filePath);
+            printStream.print(newContent);
+            System.out.println(filePath + " DONE!");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (printStream != null) {
+                printStream.close();
+            }
+        }
     }
 
 }

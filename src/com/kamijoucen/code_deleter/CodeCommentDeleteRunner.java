@@ -20,7 +20,7 @@ public class CodeCommentDeleteRunner {
                 TASK_SIZE,
                 0,
                 TimeUnit.MILLISECONDS,
-                new ArrayBlockingQueue<Runnable>(128) {
+                new LinkedBlockingQueue<Runnable>(128) {
                     @Override
                     public boolean offer(Runnable runnable) {
                         try {
