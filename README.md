@@ -1,4 +1,5 @@
-注：需要JDK 1.6+
+注：需要JDK 1.7+
+递归遍历所有.java文件部分改成了多线程
 # 食用方法
 ```java
 CodeCommentDeleteRunner.run("E:\\code");
