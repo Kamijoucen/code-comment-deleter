@@ -6,4 +6,6 @@ public class Constants {
 
     public static final String SPACE = " ";
 
+    public static final int TASK_SIZE = Runtime.getRuntime().availableProcessors() + 1;
+
 }

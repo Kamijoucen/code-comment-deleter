@@ -1,13 +1,12 @@
 package com.kamijoucen.code_deleter;
 
-import com.kamijoucen.code_deleter.util.LoopFile;
+import com.kamijoucen.code_deleter.util.Constants;
+import com.kamijoucen.code_deleter.util.ForkJoinLoopFile;
 
 import java.util.List;
 import java.util.concurrent.*;
 
 public class CodeCommentDeleteRunner {
-
-    public static final int TASK_SIZE = Runtime.getRuntime().availableProcessors() + 1;
 
     private CodeCommentDeleteRunner() {
     }
@@ -16,8 +15,8 @@ public class CodeCommentDeleteRunner {
 
     static {
         executor = new ThreadPoolExecutor(
-                TASK_SIZE,
-                TASK_SIZE,
+                Constants.TASK_SIZE,
+                Constants.TASK_SIZE,
                 0,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(128) {
@@ -36,7 +35,7 @@ public class CodeCommentDeleteRunner {
     }
 
     public static void run(String path) {
-        List<String> files = new LoopFile(path).getAbsolutePaths();
+        List<String> files = new ForkJoinLoopFile(path).getAbsolutePaths();
 
         CountDownLatch latch = new CountDownLatch(files.size());
         for (String file : files) {
