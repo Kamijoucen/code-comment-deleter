@@ -18,11 +18,14 @@ public class DeleteTask implements Runnable {
 
     @Override
     public void run() {
-        String contnet = FileUtil.read(sourcePath);
-        if (contnet != null) {
-            String content = new MachineLexical(contnet).parse();
-            FileUtil.cover(sourcePath, content);
+        try {
+            String contnet = FileUtil.read(sourcePath);
+            if (contnet != null && contnet.length() != 0) {
+                String content = new MachineLexical(contnet).parse();
+                FileUtil.cover(sourcePath, content);
+            }
+        } finally {
+            latch.countDown();
         }
-        latch.countDown();
     }
 }

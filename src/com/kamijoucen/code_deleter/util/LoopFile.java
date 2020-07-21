@@ -1,7 +1,6 @@
 package com.kamijoucen.code_deleter.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 

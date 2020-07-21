@@ -32,8 +32,8 @@ public class CodeCommentDeleteRunner {
                     }
                 }
         );
-    }
 
+    }
     public static void run(String path) {
         List<String> files = new ForkJoinLoopFile(path).getAbsolutePaths();
 

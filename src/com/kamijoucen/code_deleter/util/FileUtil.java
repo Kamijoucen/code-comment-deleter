@@ -43,9 +43,11 @@ public class FileUtil {
         try {
             printStream = new PrintStream(filePath);
             printStream.print(newContent);
+            printStream.flush();
             System.out.println(filePath + " DONE!");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.err.println(filePath + " FAILURE!");
         } finally {
             if (printStream != null) {
                 printStream.close();
